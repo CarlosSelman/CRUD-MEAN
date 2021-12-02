@@ -38,6 +38,7 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CheckboxModule } from 'primeng/checkbox';
 import { FooterComponent } from './componentes/footer/footer.component';
+import { DatosUsuarioComponent } from './componentes/datos-usuario/datos-usuario.component';
 
 
 
@@ -52,6 +53,7 @@ import { FooterComponent } from './componentes/footer/footer.component';
     
     ErrorNoExisteComponent,
               FooterComponent,
+              DatosUsuarioComponent,
     
 
   ],
