@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CS-Usuarios</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+</head>
+<body>
+  <!-- Sección de la explicación de Usuarios -->
+  <div    *ngIf="identidad != null && identidad.rol==='SuperAdministrador'" style=" border-radius: 0;"class="card text-center">
+    <div style="background-color:#283048" class="card-body">
+      <h5 style="color:white"class="card-title">USUARIOS</h5>
+      <p style="color:white" class="card-text">En este apartado se podrán crear, ver, editar y desactivar las cuentas de los usuarios.</p>
+    </div>
+  </div>
+  <!-- Sección donde estan las respectivas tablas y filtros -->
+  <div  *ngIf="identidad != null && identidad.rol==='SuperAdministrador'" class="container">
+    <!-- GRUPO DE TABS PARA LOS USUARIOS -->
+    <mat-tab-group mat-align-tabs="center">
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">search</mat-icon>
+          Ver Usuarios
+        </ng-template>
+        <!-- Filtro -->
+        <mat-form-field appearance="standard">
+          <mat-label >Escribe algo para filtrar...</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ejemplo: usuario" #input autocomplete="off">
+        </mat-form-field>
+        <!-- Tabla -->
+        <div class="mat-elevation-z8">
+          <table align="center" mat-table [dataSource]="dataSource" matSort >
+
+            <ng-container matColumnDef="usuario">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header > Usuario </th>
+              <td mat-cell *matCellDef="let element"> {{element.usuario}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="correo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Correo </th>
+              <td mat-cell *matCellDef="let element"> {{element.correo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="tel">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Teléfono </th>
+              <td mat-cell *matCellDef="let element"> {{element.tel}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="rol">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Rol </th>
+              <td mat-cell *matCellDef="let element"> {{element.rol}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+              <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef>  </th>
+              <td mat-cell *matCellDef="let element" style="text-align:right;">
+
+                  <div  *ngIf="element.rol!='SuperAdministrador'" class="dropdown">
+                    <button  class="btn btn-light btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots-vertical"> </i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li><a class="dropdown-item"
+                        data-bs-toggle="modal" data-bs-target="#mVerUsuario"(click)="obtenerUsuarioId(element._id)"><i class="bi bi-search"></i> | Ver más</a></li>
+                      <li><a *ngIf="element.rol!='SuperAdministrador'" class="dropdown-item"
+                        data-bs-toggle="modal" data-bs-target="#mEditarUsuario" (click)="obtenerUsuarioId(element._id)"><i class="bi bi-pencil-square"></i> | Editar</a></li>
+                      <li><a *ngIf="element.estado==='Activo'" class="dropdown-item"
+                        data-bs-toggle="modal" data-bs-target="#mDesactivarUsuario" (click)="obtenerUsuarioId(element._id)"><i class="bi bi-toggle-off"></i> | Desactivar</a></li>
+                      <li><a *ngIf="element.estado==='Desactivado'" class="dropdown-item"
+                        data-bs-toggle="modal" data-bs-target="#mActivarUsuario" (click)="obtenerUsuarioId(element._id)"><i class="bi bi-toggle-on"></i> | Activar</a></li>
+                      </ul>
+                  </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <!-- Paginación -->
+         <mat-paginator  [pageSizeOptions]="[5, 10, 25,50,100]" showFirstLastButtons ></mat-paginator>
+        </div>
+      </mat-tab>
+      <!-- Tab de Usuarios Desactivados-->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">search_off</mat-icon>
+          Usuarios Desactivados
+        </ng-template>
+
+        <!-- Filtro -->
+        <mat-form-field appearance="standard">
+          <mat-label >Escribe algo para filtrar...</mat-label>
+          <input matInput (keyup)="applyFilterD($event)" placeholder="Ejemplo: usuario" #input autocomplete="off">
+        </mat-form-field>
+        <!-- Tabla -->
+        <div class="mat-elevation-z8">
+          <table align="center" mat-table [dataSource]="dataSourceD"> <!-- matSort -->
+
+            <ng-container matColumnDef="usuario">
+              <th mat-header-cell *matHeaderCellDef> Usuario </th> <!-- mat-sort-header -->
+              <td mat-cell *matCellDef="let element"> {{element.usuario}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="correo">
+              <th mat-header-cell *matHeaderCellDef> Correo </th> <!-- mat-sort-header -->
+              <td mat-cell *matCellDef="let element"> {{element.correo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="tel">
+              <th mat-header-cell *matHeaderCellDef> Teléfono </th> <!-- mat-sort-header -->
+              <td mat-cell *matCellDef="let element"> {{element.tel}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="rol">
+              <th mat-header-cell *matHeaderCellDef> Rol </th> <!-- mat-sort-header -->
+              <td mat-cell *matCellDef="let element"> {{element.rol}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef> Estado </th> <!-- mat-sort-header -->
+              <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef>  </th>
+              <td mat-cell *matCellDef="let element" style="text-align:right;">
+                  <div  class="dropdown">
+                    <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots-vertical"> </i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li><a class="dropdown-item"
+                        data-bs-toggle="modal" data-bs-target="#mVerUsuario"(click)="obtenerUsuarioId(element._id)"><i class="bi bi-search"></i> | Ver más</a></li>
+                      <li><a class="dropdown-item"
+                        data-bs-toggle="modal" data-bs-target="#mEditarUsuario" (click)="obtenerUsuarioId(element._id)"><i class="bi bi-pencil-square"></i> | Editar</a></li>
+                      <li><a class="dropdown-item"
+                        data-bs-toggle="modal" data-bs-target="#mActivarUsuario" (click)="obtenerUsuarioId(element._id)" ><i class="bi bi-toggle-on"></i> | Activar</a></li>
+                      </ul>
+                  </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsD"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsD;"></tr>
+          </table>
+          <!-- Paginación -->
+         <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25,50,100]" showFirstLastButtons ></mat-paginator> -->
+        </div>
+      </mat-tab>
+
+      <!-- Tab de Crear usuarios-->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">add_reaction</mat-icon>
+          Crear Usuarios
+        </ng-template>
+        <div class="login-form">
+          <div class = "container">
+            <div class = "main">
+              <div class = "content" >
+                  <h2>Crear Usuario</h2>
+                <form>
+                  <div class="mb-3">
+                    <input autocomplete="off" type="text" placeholder="Nombres" required autofocus="" class="form-control" id="inputNombres" name="cUnom" #cUnom="ngModel"
+                    [(ngModel)]="user.nombres">
+                  </div>
+                  <div class="mb-3">
+                    <input autocomplete="off" type="text" placeholder="Apellidos" required autofocus="" class="form-control" id="inputApellidos" name="cUap" #cUap="ngModel"
+                    [(ngModel)]="user.apellidos">
+                  </div>
+                  <div class="mb-3">
+                    <input autocomplete="off" type="email" placeholder="Correo" required autofocus="" class="form-control" id="inputCorreo" name="cUcorr" #cUcorr="ngModel"
+                    [(ngModel)]="user.correo">
+                  </div>
+                  <div class="mb-3">
+                    <input autocomplete="off" type="text" placeholder="Usuario" required autofocus="" class="form-control" id="inputUsuario" name="cUuser" #cUuser="ngModel"
+                    [(ngModel)]="user.usuario">
+                  </div>
+                  <div class="mb-3">
+                    <input autocomplete="off" type="password" placeholder="Contraseña" required autofocus="" class="form-control" id="inputContrasena" name="cUpwd" #cUpwd="ngModel"
+                    [(ngModel)]="user.contrasena">
+                  </div>
+                   <div class="mb-3">
+                    <input autocomplete="off" type="text" placeholder="No. Tel" required autofocus="" class="form-control" id="inputTel" name="cUtel" #cUtel="ngModel"
+                    [(ngModel)]="user.tel">
+                  </div>
+                  <button type="submit" class="btn" (click)="crearUsuarios()">Crear Usuario</button>
+                </form>
+                <div id="emailHelp" class="form-text"><i class="bi bi-exclamation-circle-fill"></i> Al crear el usuario la cuenta ya está activa.</div>
+              </div>
+              <div class="form-img">
+                <img src="../../../assets/imgUs.jpg">
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  
+  <div *ngIf="identidad != null && identidad.rol!='SuperAdministrador'" id="err">
+    <div id="error-page">
+      <div class="contentE">
+        <h1 data-text="403">403</h1>
+        <h4 data-text="Opps! Page not found">Ooops! No puedes acceder...</h4>
+        <p>Lo sentimos, pero no tienes acceso para poder ver este contenido. </p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="identidad === null" id="err">
+    <div id="error-page">
+      <div class="contentE">
+        <h1 data-text="403">403</h1>
+        <h4 data-text="Opps! Page not found">Ooops! No puedes acceder...</h4>
+        <p>Lo sentimos, pero tienes que iniciar sesión para poder ver el contenido.</p>
+        <div class="btns">
+          <a [routerLink]="['/login']">Ir a iniciar sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </body>
+  </html>
+  
+
+<!-- Modal Ver Usuario -->
+<div class="modal fade" id="mVerUsuario" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Datos del usuario:</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="inVnom" class="form-label">Nombres:</label>
+            <input type="text" class="form-control" id="inVnom" name="nombreV"
+            #nombreV="ngModel" [(ngModel)]="idUsuarioModel.nombres" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="inVap" class="form-label">Apellidos:</label>
+            <input type="text" class="form-control" id="inVap" name="lastNameV"
+            #lastNameV="ngModel" [(ngModel)]="idUsuarioModel.apellidos" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="inVus" class="form-label">Usuario:</label>
+            <input type="text" class="form-control" id="inVus" name="userV"
+            #userV="ngModel" [(ngModel)]="idUsuarioModel.usuario" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="inVemial" class="form-label">Correo:</label>
+            <input type="text" class="form-control" id="inVemial" name="emailV"
+            #emailV="ngModel" [(ngModel)]="idUsuarioModel.correo" disabled>
+          </div>
+          <div class="mb-3">
+            <label for="inVtel" class="form-label">No. Tel:</label>
+            <input type="text" class="form-control" id="inVtel" name="telV"
+            #telV="ngModel" [(ngModel)]="idUsuarioModel.tel" disabled>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"><i class="bi bi-x-square"></i> Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Usuario -->
+<div class="modal fade" id="mEditarUsuario" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="inputNombre" class="form-label"><strong>Nombres:</strong></label>
+            <input type="text" class="form-control" id="inputNombre"
+            name="nombres" #nombres="ngModel" [(ngModel)]="idUsuarioModel.nombres">
+          </div>
+          <div class="mb-3">
+            <label for="inputApellidos" class="form-label"><strong>Apellidos:</strong></label>
+            <input type="text" class="form-control" id="inputApellidos"
+            name="apellidos" #apellidos="ngModel" [(ngModel)]="idUsuarioModel.apellidos">
+          </div>
+          <div class="mb-3">
+            <label for="inputUsuario" class="form-label"><strong>Usuario:</strong></label>
+            <input type="text" class="form-control" id="inputUsuario"
+            name="usuario" #usuario="ngModel" [(ngModel)]="idUsuarioModel.usuario">
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label"><strong>Correo:</strong></label>
+            <input type="email" class="form-control" id="exampleInputEmail1"
+            name="email" #email="ngModel" [(ngModel)]="idUsuarioModel.correo">
+          </div>
+          <div class="mb-3">
+            <label for="inputTel" class="form-label"><strong>No. Tel:</strong></label>
+            <input type="email" class="form-control" id="inputTel"
+            name="tel" #tel="ngModel" [(ngModel)]="idUsuarioModel.tel">
+          </div>
+          <div id="emailHelp" class="form-text"><i class="bi bi-exclamation-circle-fill"></i> No dejes campos vacíos.</div>
+          <hr>
+
+          <label for="inputTipo" class="col-6 col-form-label"><strong>Tipo de rol:</strong></label>
+          <div class="mb-3">
+            <select  name="type" #type="ngModel"
+              [(ngModel)]="idUsuarioModel.rol" class="form-select" aria-label="Default select example">
+              <option  [ngValue]="'Administrador'">Administrador</option>
+              <option  [ngValue]="'Usuario'">Usuario</option>
+            </select>
+
+          <div id="emailHelp" class="form-text"><strong><i class="bi bi-exclamation-circle-fill"></i> Recuerda que cada rol tiene accesos distintos.</strong></div>
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="bi bi-x-square"></i> Cerrar</button>
+        <button type="button" class="btn btn-success" (click)="editarUsuario()"><i class="bi bi-save"></i> Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Activar Usuario -->
+<div class="modal fade" id="mActivarUsuario" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmación de activación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Esta seguro de que desea activar el Usuario, {{idUsuarioModel.usuario}}?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-square"></i> No, cerrar</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+        (click)="activarUsuario(idUsuarioModel._id)">Si, activar <i class="bi bi-toggle-on"></i> </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Desactivar Usuario -->
+<div class="modal fade" id="mDesactivarUsuario" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmación de desactivación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Esta seguro de que desea desactivar el Usuario, {{idUsuarioModel.usuario}}?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-square"></i> No, cerrar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+        (click)="desactivarUsuario(idUsuarioModel._id)">Si, desactivar <i class="bi bi-toggle-off"></i> </button>
+      </div>
+    </div>
+  </div>
+</div>

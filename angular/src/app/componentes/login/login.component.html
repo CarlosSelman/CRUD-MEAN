@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>SM-Login</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+</head>
+
+<body>
+  <div class="login-form">
+    <div class = "container">
+      <div class = "main">
+        <div class = "content">
+            <h2>Iniciar sesión</h2>
+          <form>
+            <div class="mb-3">
+              <input autocomplete="off" type="text" placeholder="Ingrese su usuario" required autofocus="" class="form-control" id="exampleInputEmail1" name="email" #email="ngModel"
+              [(ngModel)]="usuarioModel.usuario" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+              <input autocomplete="off" type="password" placeholder="Ingrese su contraseña" required autofocus="" class="form-control" id="exampleInputPassword1" name="password" #password="ngModel"
+              [(ngModel)]="usuarioModel.contrasena">
+            </div>
+            <button type="submit" class="btn" (click)="login()">Acceder</button>
+          </form>
+          <div id="emailHelp" class="form-text"><i class="bi bi-exclamation-circle-fill"></i> Nunca compartas tus credenciales con nadie.</div>
+          <div id="emailHelp" class="form-text"><strong><i class="bi bi-question-circle-fill"></i> Si olvidaste o no cuentas con credenciales comunícate con el área de informática.</strong></div>
+
+        </div>
+        <div class="form-img">
+          <img src="../../../assets/imgLogin-cs.png" style="max-height: 400px;">
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-footer></app-footer>
+</body>
+</html>

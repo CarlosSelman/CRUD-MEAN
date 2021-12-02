@@ -1,0 +1,62 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+  <div class="container-fluid">
+      <img src="../../../assets/CS-NAV.png" style="max-width:95px;">
+    <button *ngIf="identidad != null" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+      <form class="d-flex">
+        <ng-container  *ngIf="identidad != null" >
+          <a style= "color:black" class="btn" data-bs-toggle="offcanvas" data-bs-target="#datosCanvas"
+          aria-controls="datosCanvas"><strong>{{identidad.usuario}}</strong></a>
+      </ng-container>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<!-- Offcanvas Datos Perfil -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="datosCanvas" aria-labelledby="datosCanvas">
+  <div class="offcanvas-header">
+    <img src="../../../assets/CS-NAV.png" style="max-width:100px;">
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <br>
+  <div style="background-color:white" class="offcanvas-body" *ngIf="identidad">
+    <form>
+      <div class="mb-3">
+        <label  for="inputNombre" class="form-label">Nombres:</label>
+        <input style=" border-radius: 0;" type="text" class="form-control" id="inputNombre" name="nombre"
+        #nombre="ngModel" [(ngModel)]="identidad.nombres" disabled>
+      </div>
+      <div class="mb-3">
+        <label for="inputApellido" class="form-label">Apellidos:</label>
+        <input style="border-radius: 0;" type="text" class="form-control" id="inputApellido" name="lastName"
+        #lastName="ngModel" [(ngModel)]="identidad.apellidos" disabled>
+      </div>
+      <div class="mb-3">
+        <label for="inputUsuario" class="form-label">Usuario:</label>
+        <input style=" border-radius: 0;" type="text" class="form-control" id="inputUsuario" name="usuario"
+        #usuario="ngModel" [(ngModel)]="identidad.usuario" disabled>
+      </div>
+      <div class="mb-3">
+        <label for="inputEmail" class="form-label">Correo:</label>
+        <input style="border-radius: 0;" type="text" class="form-control" id="inputEmail" name="email"
+        #email="ngModel" [(ngModel)]="identidad.correo" disabled>
+      </div>
+      <div class="mb-3">
+        <label for="inputTel" class="form-label">Tel:</label>
+        <input style="border-radius: 0;" type="text" class="form-control" id="inputTel" name="tel"
+        #tel="ngModel" [(ngModel)]="identidad.tel" disabled>
+      </div>
+    </form>
+    <hr>
+    <div class="offcanvas-footer">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" aria-label="Close" [routerLink]="['/datosPerfil', identidad._id]">Ver perfil</button>
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas" aria-label="Close" (click)="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+</div>
