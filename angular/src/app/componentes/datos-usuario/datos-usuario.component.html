@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CS-Perfil</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+</head>
+
+<body>
+  <section *ngIf="identidad != null" class="seccion-perfil-usuario">
+    <div class="perfil-usuario-header">
+      <div class="perfil-usuario-portada">
+        <div class="perfil-usuario-avatar">
+          <img src="/assets/imgLogin-cs.png" alt="img-avatar">
+          <button style="background-color:rgb(1, 159, 180)"type="button" class="boton-avatar"></button>
+        </div>
+        <button *ngIf="identidad.rol=='SuperAdministrador'"type="button" class="boton-portada" [routerLink]="['/usuarios']">
+          Regresar a usuarios
+        </button>
+      </div>
+    </div>
+    <div  class="perfil-usuario-body">
+      <div class="perfil-usuario-bio">
+        <h3 class="titulo">{{identidad.usuario}}</h3>
+          <!--<p class="texto">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua.</p>-->
+      </div>
+      <div class="perfil-usuario-footer">
+        <ul class="lista-datos">
+          <li><i class="bi bi-list-nested"></i> <strong> Nombre(s):</strong></li>
+          <li><i class="bi bi-arrow-return-right"></i> {{identidad.nombres}}</li>
+          <li><i class="bi bi-list-nested"></i> <strong> Apellido(s):</strong></li>
+          <li><i class="bi bi-arrow-return-right"></i>  {{identidad.apellidos}}</li>
+        </ul>
+        <ul class="lista-datos">
+          <li><i class="bi bi-envelope"></i> <strong> Correo electrónico:</strong></li>
+          <li><i class="bi bi-arrow-return-right"></i>  {{identidad.correo}}</li>
+          <li><i class="bi bi-telephone"></i> <strong> No. Telefónico:</strong></li>
+          <li><i class="bi bi-arrow-return-right"></i> {{identidad.tel}}</li>
+        </ul>
+      </div>
+      <div class="redes-sociales">
+        <a style="color:black" href="https://github.com/CarlosSelman?tab=repositories" class="boton-redes"><i class="bi bi-github"></i></a>
+        <a href="https://www.linkedin.com/in/carlos-andres-selman-david-90b31721b/" class="boton-redes"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+    <br>
+  </section>
+  <div *ngIf="identidad === null" id="err">
+      <div id="error-page">
+        <div class="contentE">
+          <h1 data-text="403">403</h1>
+          <h4 data-text="Opps! Page not found">Ooops! No puedes acceder...</h4>
+          <p>Lo sentimos, pero tienes que iniciar sesión para poder ver el contenido.</p>
+          <div class="btns">
+            <a [routerLink]="['/login']">Ir a iniciar sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

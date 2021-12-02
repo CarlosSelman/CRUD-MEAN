@@ -43,7 +43,6 @@ export class LoginComponent implements OnInit {
     this._usuarioService.login(this.usuarioModel).subscribe(
       (response) => {
         console.log(response);
-        //this.refresh()
         this.identidad = response.usuarioEncontrado;
         localStorage.setItem('identidad', JSON.stringify(this.identidad));
         this.getToken();
@@ -51,6 +50,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', JSON.stringify(this.token));
 
         if(this.identidad.estado=="Activo"){
+          if(this.identidad.rol=="SuperAdministrador" || this.identidad.rol=="Administrador"){
             Swal.fire({
               //position: 'top-end',
               icon: 'success',
@@ -59,12 +59,20 @@ export class LoginComponent implements OnInit {
               timer: 1500,
             });
             this._router.navigate(['/usuarios']);
+          }
         } else if(this.identidad.estado!="Activo"){
           Swal.fire({
             icon: 'error',
             title: 'Su cuenta no está activa',
             showConfirmButton: false,
             timer: 1500,
+          });
+        } else if(this.identidad.rol==="Usuario"){
+          Swal.fire({
+            icon: 'error',
+            title: 'No tienes los permisos para acceder',
+            showConfirmButton: false,
+            timer: 3000,
           });
         }
       },
